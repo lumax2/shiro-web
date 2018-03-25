@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Shiro与Spring整合 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 关联SecurityManager -->
+        <property name="securityManager" ref="securityManager"/>
+
+        <!--拦截所有登录请求-->
+        <property name="filterChainDefinitions">
+            <value>
+                /product/toList=anon
+                /user/login=anon
+                /product/toAdd=perms[product:add]
+                /product/toUpdate=roles[admin]
+                /**=authc
+            </value>
+        </property>
+
+        <!--修改拦截后的默认登录页-->
+        <property name="loginUrl" value="/toLogin"/>
+        <!--添加未授权页面-->
+        <property name="unauthorizedUrl" value="/unauth"/>
+    </bean>
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!-- 关联realm -->
+        <property name="realm" ref="realm"/>
+    </bean>
+
+    <bean id="realm" class="com.yoozoo.shiroweb.realm.MyRealm"/>
+
+</beans>
