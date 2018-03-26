@@ -12,22 +12,18 @@
 
 当前用户名：${sessionScope.username}
 
-<hr/><%--
-<shiro:hasPermission name="product:add">--%>
+<hr/>
+<shiro:hasPermission name="product:add">
 <a href="${pageContext.request.contextPath}/product/toAdd">商品添加</a><br/>
-<%--</shiro:hasPermission>--%>
-<%--
-<shiro:hasPermission name="product:update">
---%>
-<a href="${pageContext.request.contextPath}/product/toUpdate">商品修改</a><br/>
-<%--
-</shiro:hasPermission>
-<shiro:hasPermission name="product:list">
---%>
-<a href="${pageContext.request.contextPath}/product/toList">商品列表</a><br/>
-<%--
 </shiro:hasPermission>
 
---%>
+<shiro:hasPermission name="product:update">
+<a href="${pageContext.request.contextPath}/product/toUpdate">商品修改</a><br/>
+</shiro:hasPermission>
+
+<shiro:hasPermission name="product:list">
+<a href="${pageContext.request.contextPath}/product/toList">商品列表</a><br/>
+</shiro:hasPermission>
+
 </body>
 </html>

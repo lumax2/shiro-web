@@ -1,25 +1,39 @@
 package com.yoozoo.shiroweb.realm;
 
+import com.yoozoo.shiroweb.model.form.User;
+import com.yoozoo.shiroweb.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 /**
  * Created by Hao on 2018/3/25.
  */
 public class MyRealm extends AuthorizingRealm {
+
+    @Resource
+    private UserService userService;
 
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("正在执行授权");
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         /*1 基于资源的授权*/
-        info.addStringPermission("product:add");
-
+        User userWithToken = (User) (SecurityUtils.getSubject().getPrincipal());
+        List<String> perms =userService.findPermissionByUserId(userWithToken.getId());
+        if(perms!=null){
+            for(String perm:perms){
+                info.addStringPermission(perm);
+            }
+        }
         /*2 基于角色的授权*/
-        info.addRole("admin");
+        //info.addRole("admin");
         return info;
     }
 
@@ -28,13 +42,13 @@ public class MyRealm extends AuthorizingRealm {
 
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
 
-        String usernameDatabase ="jack";
-        String passwordDatebase ="123";
+        User dbUser =userService.findByName(token.getUsername());
 
-        if(!usernameDatabase.equals(token.getUsername())){
-            //用户不存在
+        if(dbUser == null){
             return null;
         }
-        return new SimpleAuthenticationInfo(usernameDatabase,passwordDatebase,"");
+
+        return new SimpleAuthenticationInfo(dbUser,dbUser.getPassword(),"");
     }
+
 }

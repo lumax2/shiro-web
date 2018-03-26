@@ -13,10 +13,10 @@
         <!--拦截所有登录请求-->
         <property name="filterChainDefinitions">
             <value>
-                /product/toList=anon
                 /user/login=anon
+                /product/toList=perms[product:list]
                 /product/toAdd=perms[product:add]
-                /product/toUpdate=roles[admin]
+                /product/toUpdate=perms[product:update]
                 /**=authc
             </value>
         </property>
